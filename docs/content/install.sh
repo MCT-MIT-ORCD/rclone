@@ -81,6 +81,7 @@ case $OS in
     ;;  
   Darwin)
     OS='osx'
+    # Define values "unique" to this platform/OS.
     binTgtDir=/usr/local/bin
     man1TgtDir=/usr/local/share/man/man1
     ;;
@@ -161,6 +162,7 @@ case "$OS" in
         mandb
     fi
     ;;
+
   'freebsd'|'openbsd'|'netbsd')
     #binary
     cp rclone /usr/bin/rclone.new
@@ -171,17 +173,29 @@ case "$OS" in
     cp rclone.1 /usr/local/man/man1/
     makewhatis
     ;;
+
   'osx')
+    ### # # # # # # # # # # # # # # # # # # # #
     #binary
-    mkdir -m 0555 -p ${binTgtDir}
+    # Shortcut, make dir and all parents with same mode.
+	# (No change if action not implemented.)
+    mkdir -m 0755 -p ${binTgtDir}
+    # As before copy file into place...
     cp rclone ${binTgtDir}/rclone.new
+    # Then rename to desired target.
     mv ${binTgtDir}/rclone.new ${binTgtDir}/rclone
+    # New part, set our filemodes.
     chmod a=x ${binTgtDir}/rclone
+    ### # # # # # # # # # # # # # # # # # # # #
     #manual
-    mkdir -m 0555 -p ${man1TgtDir}
+    # Shortcut, make dir and all parents with same mode.
+    mkdir -m 0755 -p ${man1TgtDir}
+    # Copy new file into place.
     cp rclone.1 ${man1TgtDir}    
+    # New detail, set filemodes so everyone can read it.
     chmod a=r ${man1TgtDir}/rclone.1
     ;;
+
   *)
     echo 'OS not supported'
     exit 2
